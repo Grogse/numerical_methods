@@ -2,15 +2,15 @@ import numpy as np
 
 
 # LU - Decomposition
-def matrix_to_lu(matrix_a):
-    n = matrix_a.shape[0]
+def matrix_to_lu(matrix):
+    n = matrix.shape[0]
     matrix_lu = np.matrix(np.zeros([n, n]))
 
     for k in range(n):
         for j in range(k, n):
-            matrix_lu[k, j] = matrix_a[k, j] - matrix_lu[k, :k] * matrix_lu[:k, j]
+            matrix_lu[k, j] = matrix[k, j] - matrix_lu[k, :k] * matrix_lu[:k, j]
         for i in range(k + 1, n):
-            matrix_lu[i, k] = (matrix_a[i, k] - matrix_lu[i, :k] * matrix_lu[:k, k]) / matrix_lu[k, k]
+            matrix_lu[i, k] = (matrix[i, k] - matrix_lu[i, :k] * matrix_lu[:k, k]) / matrix_lu[k, k]
 
     return matrix_lu
 
@@ -38,7 +38,11 @@ def matrix_det(matrix):
     return round(np.linalg.det(matrix))
 
 
-def solve_slay(matrix_lu, b):
+def solve_slay(data):
+    matrix = data[:, :len(data[0]) - 1]
+    b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
+
+    matrix_lu = matrix_to_lu(matrix)
     n = matrix_lu.shape[0]
     y = np.matrix(np.zeros([matrix_lu.shape[0], 1]))
     x = np.matrix(np.zeros([matrix_lu.shape[0], 1]))
