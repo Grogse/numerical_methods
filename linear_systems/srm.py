@@ -34,7 +34,6 @@ def solve_slay(data):
 
     n = matrix.shape[0]
     matrix_s = matrix_to_s(matrix)
-    matrix_s_t = matrix_s.transpose()
     y = np.matrix(np.zeros([matrix_s.shape[0], 1], dtype=complex))
     x = np.matrix(np.zeros([matrix_s.shape[0], 1], dtype=complex))
 

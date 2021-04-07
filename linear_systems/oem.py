@@ -2,8 +2,8 @@ import numpy as np
 
 
 # Optimum exclusion method
-def solve_slay(matrix):
-    mat = matrix.copy()
+def solve_slay(data):
+    mat = data.copy()
     n = mat.shape[0]
     x = np.zeros((mat.shape[0],))
     a = mat[0][0]

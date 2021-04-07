@@ -2,7 +2,7 @@ import numpy as np
 
 
 # LU - Decomposition
-def matrix_to_lu(matrix):
+def lu_decomposition(matrix):
     n = matrix.shape[0]
     matrix_lu = np.matrix(np.zeros([n, n]))
 
@@ -42,7 +42,7 @@ def solve_slay(data):
     matrix = data[:, :len(data[0]) - 1]
     b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
 
-    matrix_lu = matrix_to_lu(matrix)
+    matrix_lu = lu_decomposition(matrix)
     n = matrix_lu.shape[0]
     y = np.matrix(np.zeros([matrix_lu.shape[0], 1]))
     x = np.matrix(np.zeros([matrix_lu.shape[0], 1]))
@@ -53,9 +53,6 @@ def solve_slay(data):
     for i in range(1, n + 1):
         x[-i] = (y[-i] - matrix_lu[-i, -i:] * x[-i:]) / matrix_lu[-i, -i]
 
-    res = np.squeeze(np.asarray(x))
-
-    for i in range(n):
-        res[i] = round(res[i], 7)
+    res = np.squeeze(np.asarray(np.round(x, 7)))
 
     return res
