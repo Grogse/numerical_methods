@@ -27,7 +27,7 @@ def create_r(matrix):
     return lin.inv(qr_decomposition(matrix)).dot(matrix)
 
 
-def solve_slay(data):
+def solve_le(data):
     matrix = data[:, :len(data[0]) - 1]
     b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
 

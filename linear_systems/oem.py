@@ -2,7 +2,7 @@ import numpy as np
 
 
 # Optimum exclusion method
-def solve_slay(data):
+def solve_le(data):
     mat = data.copy()
     n = mat.shape[0]
     x = np.zeros((mat.shape[0],))

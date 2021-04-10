@@ -38,7 +38,7 @@ def matrix_det(matrix):
     return round(np.linalg.det(matrix))
 
 
-def solve_slay(data):
+def solve_le(data):
     matrix = data[:, :len(data[0]) - 1]
     b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
 

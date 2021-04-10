@@ -2,7 +2,7 @@ import numpy as np
 import cmath
 
 
-# Square root method
+# Square root method, the matrix must be symmetric !!!
 def matrix_to_s(matrix):
     s_1 = s_2 = 0
     n = matrix.shape[0]
@@ -28,7 +28,8 @@ def matrix_to_s(matrix):
 
     return matrix_s
 
-def solve_slay(data):
+
+def solve_le(data):
     matrix = data[:, :len(data[0]) - 1]
     b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
 
