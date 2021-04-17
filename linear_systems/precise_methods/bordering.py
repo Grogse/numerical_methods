@@ -38,4 +38,4 @@ def solve_le(data):
 
     inv_mat = inv_matrix(matrix)
 
-    return np.round(b.dot(inv_mat), 7)
+    return np.round(inv_mat.dot(b), 7)
