@@ -1,12 +1,13 @@
 import numpy as np
 
 
-# The simple iteration method
+# Seidel method
 def solve_le(data):
     n = data.shape[0]
     eps = 10 ** -3
     x = np.zeros(n)
     x_0 = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
+    x_new = x_0.copy()
     mat_c = data.copy()
 
     for i in range(n):
@@ -15,8 +16,9 @@ def solve_le(data):
             if j == n:
                 mat_c[i, j] *= -1
 
-    while np.all(abs(x - x_0) > eps):
+    while np.any(abs(x - x_new) > eps):
         x_0 = x.copy()
+        x_new = x.copy()
         x = np.zeros(n)
         for i in range(n):
             for j in range(n + 1):
@@ -26,5 +28,6 @@ def solve_le(data):
                     x[i] += mat_c[i, j]
 
             x[i] -= mat_c[i, i] * x_0[i]
+            x_0[i] = x[i]
 
     return np.round(x, 5)
