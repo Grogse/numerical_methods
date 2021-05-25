@@ -4,7 +4,7 @@ import numpy as np
 # The simple iteration method
 def solve_le(data):
     n = data.shape[0]
-    eps = 10 ** -3
+    eps = 10 ** -5
     x = np.zeros(n)
     x_0 = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
     mat_c = data.copy()
@@ -15,7 +15,7 @@ def solve_le(data):
             if j == n:
                 mat_c[i, j] *= -1
 
-    while np.all(abs(x - x_0) > eps):
+    while max(abs(x - x_0) > eps):
         x_0 = x.copy()
         x = np.zeros(n)
         for i in range(n):
@@ -27,4 +27,4 @@ def solve_le(data):
 
             x[i] -= mat_c[i, i] * x_0[i]
 
-    return np.round(x, 5)
+    return np.round(x, 7)

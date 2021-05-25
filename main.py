@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.linalg as lin
 from linear_systems.precise_methods import lu, oem, srm, qr, bordering
-from linear_systems.iterative_methods import sim, seidel
+from linear_systems.iterative_methods import sim, seidel, sor
 
 import openpyxl as excel
 from openpyxl.styles import Alignment
@@ -23,6 +23,7 @@ x_4 = qr.solve_le(data)
 x_5 = bordering.solve_le(data)
 x_6 = sim.solve_le(data)
 x_7 = seidel.solve_le(data)
+x_8 = sor.solve_le(data)
 
 ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=14)
 ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=2)
@@ -83,44 +84,53 @@ k = 1
 ws.merge_cells(start_row=j, start_column=1, end_row=j, end_column=14)
 ws.merge_cells(start_row=j + 1, start_column=1, end_row=j + 1, end_column=2)
 ws.merge_cells(start_row=j + 1, start_column=4, end_row=j + 1, end_column=5)
+ws.merge_cells(start_row=j + 1, start_column=7, end_row=j + 1, end_column=8)
 
 ws.cell(row=j, column=1).value = 'ITERATIVE METHODS'
 ws.cell(row=j + 1, column=1).value = 'SIM'
 ws.cell(row=j + 1, column=4).value = 'SEIDEL'
+ws.cell(row=j + 1, column=7).value = 'SOR'
 
 ws.cell(row=j, column=1).alignment = Alignment(horizontal='center')
 ws.cell(row=j + 1, column=1).alignment = Alignment(horizontal='center')
 ws.cell(row=j + 1, column=4).alignment = Alignment(horizontal='center')
+ws.cell(row=j + 1, column=7).alignment = Alignment(horizontal='center')
 
-for i, z in zip(x_6, x_7):
+for i, z, w in zip(x_6, x_7, x_8):
     ws.cell(row=j + 2, column=1).value = 'x_' + str(k)
     ws.cell(row=j + 2, column=1).alignment = Alignment(horizontal='center')
 
     ws.cell(row=j + 2, column=4).value = 'x_' + str(k)
     ws.cell(row=j + 2, column=4).alignment = Alignment(horizontal='center')
 
+    ws.cell(row=j + 2, column=7).value = 'x_' + str(k)
+    ws.cell(row=j + 2, column=7).alignment = Alignment(horizontal='center')
+
     ws.cell(row=j + 2, column=2).value = i
     ws.cell(row=j + 2, column=2).alignment = Alignment(horizontal='center')
 
     ws.cell(row=j + 2, column=5).value = z
     ws.cell(row=j + 2, column=5).alignment = Alignment(horizontal='center')
+
+    ws.cell(row=j + 2, column=8).value = w
+    ws.cell(row=j + 2, column=8).alignment = Alignment(horizontal='center')
     j += 1
     k += 1
 
-wb.save("answer.xlsx")
+wb.save("answers.xlsx")
 wb.close()
 
-print('PRECISE METHODS')
-print(x_0)
-print(x_1)
-print(x_2)
-print(x_3)
-print(x_4)
-print(x_5)
+print('PRECISE METHODS:')
+print('PRECISE SOLUTION -', x_0)
+print('LU -', x_1)
+print('OEM -', x_2)
+print('SRM -', x_3)
+print('QR -', x_4)
+print('BORDERING -', x_5)
 print(np.array_equal(x_1, x_2) and np.array_equal(x_2, x_4) and np.array_equal(x_4, x_5)
       and np.array_equal(x_5, x_0))
 
-print('\nITERATIVE METHODS')
-print(x_6)
-print(x_7)
-
+print('\nITERATIVE METHODS:')
+print('SIM -', x_6)
+print('SEIDEL -', x_7)
+print('SOR -', x_8)

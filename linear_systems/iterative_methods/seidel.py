@@ -4,7 +4,7 @@ import numpy as np
 # Seidel method
 def solve_le(data):
     n = data.shape[0]
-    eps = 10 ** -3
+    eps = 10 ** -7
     x = np.zeros(n)
     x_0 = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
     x_new = x_0.copy()
@@ -16,7 +16,7 @@ def solve_le(data):
             if j == n:
                 mat_c[i, j] *= -1
 
-    while np.any(abs(x - x_new) > eps):
+    while max(abs(x - x_new) > eps):
         x_0 = x.copy()
         x_new = x.copy()
         x = np.zeros(n)
@@ -30,4 +30,4 @@ def solve_le(data):
             x[i] -= mat_c[i, i] * x_0[i]
             x_0[i] = x[i]
 
-    return np.round(x, 5)
+    return np.round(x, 10)
