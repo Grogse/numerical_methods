@@ -7,7 +7,6 @@ def solve_le(data):
     x = np.zeros(n)
     d = np.zeros(n)
     mat_c = data.copy()
-    #count = 0
 
     for i in range(n):
         for j in range(n + 1):
@@ -18,15 +17,14 @@ def solve_le(data):
                 mat_c[i, j] *= -1
                 d[i] += mat_c[i, j]
 
-    while max(abs(d)) > eps:
+    while True:
         for k in range(n):
-            #count += 1
             if max(abs(d)) < eps:
-                break
+                return x
             tmp = max(abs(d))
             for z in range(n):
                 if abs(d[z]) == tmp:
-                    x[k] += d[z]
+                    x[z] += d[z]
             for i in range(n):
                 d[i] = 0
                 for j in range(n + 1):
@@ -34,5 +32,3 @@ def solve_le(data):
                         d[i] += mat_c[i, j] * x[j]
                     if j == n:
                         d[i] += mat_c[i, j]
-    #print(count)
-    return x
