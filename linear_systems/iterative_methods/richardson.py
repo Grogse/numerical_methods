@@ -3,10 +3,12 @@ from math import cos, pi
 
 
 # Modified Richardson iteration
-def jacobi_eigenvalue(n, a, it_max: int):
+def jacobi_eigenvalue(n, a, it_max: int, P):
+    count = 0
     d = np.zeros(n)
     bw = np.zeros(n)
     zw = np.zeros(n)
+    k = 0
 
     for i in range(n):
         d[i] = a[i, i]
@@ -15,16 +17,21 @@ def jacobi_eigenvalue(n, a, it_max: int):
     it_num = 0
 
     while it_num < it_max:
+        if (k < P):
+            k += 1
         it_num += 1
         diagonal = 0
 
+        max = np.sqrt(np.max(d))
+        sigma = max * (10 ** -k)
+
+        check = True
         for j in range(n):
             for i in range(j):
-                diagonal += abs(a[i, j])
+                if a[i, j] > sigma:
+                    check = False
 
-        diagonal = (diagonal * 0.2) / (n ** 2)
-
-        if diagonal == 0:
+        if (check):
             break
 
         for p in range(n):
@@ -86,6 +93,7 @@ def jacobi_eigenvalue(n, a, it_max: int):
             d[m] = d[k]
             d[k] = t
 
+    print(it_num)
     return d
 
 
@@ -96,7 +104,7 @@ def solve_le(data, iterations: int):
     matrix_c = matrix.copy()
     b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
 
-    eigenvalues = jacobi_eigenvalue(n, matrix_c, 1000)
+    eigenvalues = jacobi_eigenvalue(n, matrix_c, 1000, 100)
     t_0 = 2 / (max(eigenvalues) + min(eigenvalues))
     eta = min(eigenvalues) / max(eigenvalues)
     f_0 = (1 - eta) / (1 + eta)

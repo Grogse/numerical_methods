@@ -6,6 +6,11 @@ from linear_systems.iterative_methods import sim, seidel, sor, gradient, richard
 import openpyxl as excel
 from openpyxl.styles import Alignment
 
+
+def pp(l):
+    return '[ ' + ', '.join(f'{n:.3f}' for n in l) + ' ]'
+
+
 data = np.loadtxt('input.txt')
 
 wb = excel.Workbook()
@@ -151,8 +156,8 @@ print(np.array_equal(x_1, x_2) and np.array_equal(x_2, x_4) and np.array_equal(x
       and np.array_equal(x_5, x_0))
 
 print('\nITERATIVE METHODS:')
-print('SIM -', x_6)
-print('SEIDEL -', x_7)
+print('SIM -', pp(x_6))
+print('SEIDEL -', pp(x_7))
 print('SOR -', x_8)
 print('GRADIENT -', x_9)
-print('RICHARDSON -', x_10)
+print('RICHARDSON -', pp(x_10))
