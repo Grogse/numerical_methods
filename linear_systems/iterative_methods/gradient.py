@@ -2,7 +2,7 @@ import numpy as np
 
 
 # Naive Line Search for Gradient Descent
-def solfe_le(data):
+def solve_le(data):
     n = data.shape[0]
     eps = 10 ** -3
     x = np.zeros(n)

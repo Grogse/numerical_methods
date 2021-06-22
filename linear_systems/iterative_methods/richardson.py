@@ -1,42 +1,45 @@
 import numpy as np
-from math import cos, pi
+from math import cos, pi, log
 
 
 # Modified Richardson iteration
-def jacobi_eigenvalue(n, a, it_max: int, P):
-    count = 0
+def jacobi_eigenvalue(n, a, col):
     d = np.zeros(n)
     bw = np.zeros(n)
     zw = np.zeros(n)
-    k = 0
+
+    it_num = 0
+    k = 1
 
     for i in range(n):
         d[i] = a[i, i]
         bw[i] = d[i]
 
-    it_num = 0
+    signum = np.sqrt(np.max(abs(d))) * (10 ** -k)
 
-    while it_num < it_max:
-        if (k < P):
-            k += 1
+    while True:
         it_num += 1
         diagonal = 0
+        flag = True
 
-        max = np.sqrt(np.max(d))
-        sigma = max * (10 ** -k)
-
-        check = True
         for j in range(n):
             for i in range(j):
-                if a[i, j] > sigma:
-                    check = False
+                if a[i, j] > signum:
+                    flag = False
+                diagonal += abs(a[i, j])
 
-        if (check):
-            break
+        diagonal = diagonal / (4 * n)
+
+        if flag:
+            if k < col:
+                k += 1
+                signum = np.sqrt(np.max(abs(d))) * (10 ** -k)
+            else:
+                break
 
         for p in range(n):
             for q in range(p + 1, n):
-                gapq = 100 * abs(a[p, q])
+                gapq = 10 * abs(a[p, q])
                 termp = gapq + abs(d[p])
                 termq = gapq + abs(d[q])
 
@@ -44,37 +47,45 @@ def jacobi_eigenvalue(n, a, it_max: int, P):
                     a[p, q] = 0
                 elif diagonal <= abs(a[p, q]):
                     h = d[q] - d[p]
+                    term = abs(h) + gapq
 
-                    if abs(h) + gapq == abs(h):
+                    if term == abs(h):
                         t = a[p, q] / h
                     else:
                         theta = 0.5 * h / a[p, q]
-                        t = 1 / (abs(theta) + np.sqrt(1.0 + theta * theta))
+                        t = 1 / (abs(theta) + np.sqrt(1 + theta * theta))
                         if theta < 0:
                             t = - t
 
-                    c = 1 / np.sqrt(1 + t ** 2)
+                    c = 1 / np.sqrt(1 + t * t)
                     s = t * c
                     tau = s / (1 + c)
                     h = t * a[p, q]
 
                     zw[p] -= h
-                    zw[q] += + h
-                    d[p] -= - h
-                    d[q] += + h
+                    zw[q] += h
+                    d[p] -= h
+                    d[q] += h
+
                     a[p, q] = 0
 
                     for j in range(p):
-                        a[j, p] = a[j, p] - s * (a[j, q] + a[j, p] * tau)
-                        a[j, q] = a[j, q] + s * (a[j, p] - a[j, q] * tau)
+                        g = a[j, p]
+                        h = a[j, q]
+                        a[j, p] = g - s * (h + g * tau)
+                        a[j, q] = h + s * (g - h * tau)
 
                     for j in range(p + 1, q):
-                        a[p, j] = a[p, j] - s * (a[j, q] + a[p, j] * tau)
-                        a[j, q] = a[j, q] + s * (a[p, j] - a[j, q] * tau)
+                        g = a[p, j]
+                        h = a[j, q]
+                        a[p, j] = g - s * (h + g * tau)
+                        a[j, q] = h + s * (g - h * tau)
 
                     for j in range(q + 1, n):
-                        a[p, j] = a[p, j] - s * (a[q, j] + a[p, j] * tau)
-                        a[q, j] = a[q, j] + s * (a[p, j] - a[q, j] * tau)
+                        g = a[p, j]
+                        h = a[q, j]
+                        a[p, j] = g - s * (h + g * tau)
+                        a[q, j] = h + s * (g - h * tau)
 
         for i in range(n):
             bw[i] += zw[i]
@@ -83,11 +94,9 @@ def jacobi_eigenvalue(n, a, it_max: int, P):
 
     for k in range(n - 1):
         m = k
-
         for l in range(k + 1, n):
             if d[l] < d[m]:
                 m = l
-
         if k != m:
             t = d[m]
             d[m] = d[k]
@@ -97,16 +106,19 @@ def jacobi_eigenvalue(n, a, it_max: int, P):
     return d
 
 
-def solve_le(data, iterations: int):
+def solve_le(data):
+    eps = 10 ** -5
     n = data.shape[0]
     x = np.zeros(n)
     matrix = data[:, :len(data[0]) - 1]
     matrix_c = matrix.copy()
     b = np.squeeze(np.asarray(data[:, len(data[0]) - 1:]))
 
-    eigenvalues = jacobi_eigenvalue(n, matrix_c, 1000, 100)
+    eigenvalues = jacobi_eigenvalue(n, matrix_c, 10)
+    print(eigenvalues)
     t_0 = 2 / (max(eigenvalues) + min(eigenvalues))
     eta = min(eigenvalues) / max(eigenvalues)
+    iterations = int(log(2 / eps) / (2 * np.sqrt(abs(eta))))
     f_0 = (1 - eta) / (1 + eta)
 
     for i in range(1, iterations):
